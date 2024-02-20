@@ -1,17 +1,16 @@
-import type { CodegenConfig } from '@graphql-codegen/cli'
+import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-    schema: 'https://rickandmortyapi.com/graphql/',
-    documents: ['src/**/*.vue'],
-    ignoreNoDocuments: true,
+    schema: 'https://rickandmortyapi.com/graphql',
+    documents: ['src/**/*.vue', '!src/gql/**/*'],
     generates: {
         './src/gql/': {
             preset: 'client',
             config: {
-                useTypeImports: true
-            }
-        }
-    }
-}
+                useTypeImports: true,
+            },
+        },
+    },
+};
 
-export default config
+export default config;
