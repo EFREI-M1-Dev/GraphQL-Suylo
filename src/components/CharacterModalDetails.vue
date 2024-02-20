@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {graphql, useFragment} from "../gql";
+import {graphql} from "../gql";
 import {ref, watchEffect} from "vue";
 import {useQuery} from "@urql/vue";
 
@@ -9,7 +9,7 @@ const props = defineProps({
 const emit = defineEmits(['close-modal']);
 
 const {data, executeQuery} = useQuery({
-  query: graphql(/* GraphQL */ `
+  query: graphql(`
     query character($id: ID!) {
       character(id: $id) {
         id
@@ -28,17 +28,13 @@ const {data, executeQuery} = useQuery({
   pause: true,
 });
 
-const character = ref(null);
+const character = ref();
 
 // Récupération des données du personnage quand l'id change
 watchEffect(() => {
   if (props.id) {
     executeQuery({id: props.id});
   }
-});
-
-// Mise à jour de la variable character quand les données sont récupérées
-watchEffect(() => {
   if (data.value?.character) {
     character.value = data.value.character;
   }
@@ -55,26 +51,28 @@ function closeModal() {
       <h2 class="modal__content__title">
         Détails du personnage
       </h2>
-        <div class="modal__content__details" v-if="character">
-          <img :src="character?.image" :alt="character?.name + '\'s image'" />
-          <h3>
-            {{ character.name }}
-          </h3>
-          <ul>
-            <li>
-              Type: {{ character.species }}
-            </li>
-            <li>
-              Genre: {{ character.gender }}
-            </li>
-            <li>
-              Status: {{ character.status }}
-            </li>
-            <li>
-              Emplacement: {{ character.location.name }}
-            </li>
-          </ul>
-        </div>
+        <Transition name="fade">
+          <div class="modal__content__details" v-if="character">
+            <img :src="character?.image" :alt="character?.name + '\'s image'" />
+            <h3>
+              {{ character.name }}
+            </h3>
+            <ul>
+              <li>
+                Type: {{ character.species }}
+              </li>
+              <li>
+                Genre: {{ character.gender }}
+              </li>
+              <li>
+                Status: {{ character.status }}
+              </li>
+              <li>
+                Emplacement: {{ character.location.name }}
+              </li>
+            </ul>
+          </div>
+        </Transition>
     </div>
   </div>
 </template>
@@ -95,7 +93,9 @@ function closeModal() {
     background-color: white;
     color: #282828;
     padding: 2rem;
-    min-height: 400px;
+    min-height: 490px;
+    min-width: 400px;
+    box-sizing: border-box;
     border-radius: 5px;
 
     &__title{
@@ -126,7 +126,7 @@ function closeModal() {
 
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 1s;
+  transition: opacity .2s;
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
