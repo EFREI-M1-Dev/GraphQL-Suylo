@@ -30,7 +30,6 @@ const {data, executeQuery} = useQuery({
 
 const character = ref();
 
-// Récupération des données du personnage quand l'id change
 watchEffect(() => {
   if (props.id) {
     executeQuery({id: props.id});
